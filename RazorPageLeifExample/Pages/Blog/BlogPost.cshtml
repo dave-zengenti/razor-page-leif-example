@@ -7,20 +7,25 @@
   <h1 class="blog-hero__title">
     @Model.BlogPostModel?.Title
   </h1>
-  <img class="blog-hero__img" src="@(Model.BlogPostModel?.PrimaryImageUrl)" alt="@Model.BlogPostModel?.PrimaryImage?.AltText"/>
+  @* <img class="blog-hero__img" src="@(Model.BlogPostModel?.PrimaryImageUrl)"
+  alt="@Model.BlogPostModel?.PrimaryImage?.AltText" /> *@
 </div>
-@if (Model.BlogPostModel?.Author != null){
+@if (Model.BlogPostModel?.Author != null)
+{
   <div class="profile">
-    @if (Model.BlogPostModel.Author?.Photo != null){
-      <img class="profile__img" src="@(Model.BlogPostModel.Author.PhotoUrl)" alt="@Model.BlogPostModel.Author.Photo.AltText" />
+  @if (Model.BlogPostModel.Author?.Photo != null)
+    {
+      <img class="profile__img" src="@(Model.BlogPostModel.Author.PhotoUrl)"
+        alt="@Model.BlogPostModel.Author.Photo.AltText" />
     }
     <span class="profile__name">
       @Model.BlogPostModel.Author?.Name
     </span>
-    @if (Model.BlogPostModel.Category != null){
-    <span class="category">
-      @Model.BlogPostModel.Category.Name
-    </span>
+    @if (Model.BlogPostModel.Category != null)
+    {
+      <span class="category">
+        @Model.BlogPostModel.Category.Name
+      </span>
     }
   </div>
 }
@@ -28,25 +33,26 @@
 
 <div class="blog__content">
   <p class="lead">@Model.BlogPostModel?.LeadParagraph</p>
-  @if (Model.BlogPostModel?.PostBody != null){
-    @foreach(var item in Model.BlogPostModel.PostBody)
+  @if (Model.BlogPostModel?.PostBody != null)
+  {
+    @foreach (var item in Model.BlogPostModel.PostBody)
+    {
+      if (item.Type == "markup")
       {
-        if (item.Type == "markup")
-        {
-          <div>@Html.Raw(item.Value<string>())</div>
-        }
-        if (item.Type == "image")
-        {
-          <div class="inline-img">
-            <img class="inline-img__img" src="@(ImageHelper.GetImageUrl(item.Value<Image>()))" alt="@item.Value().AltText"/>
-            <div class="inline-img__content">
-              <h2 class="inline-img__title">
-                @item.Value().Caption
-              </h2>
-            </div>
-          </div>
-        }
+        <div>@Html.Raw(item.Value<string>())</div>
       }
+      if (item.Type == "image")
+      {
+        <div class="inline-img">
+          <img class="inline-img__img" src="@(ImageHelper.GetImageUrl(item.Value<Image>()))" alt="@item.Value().AltText" />
+          <div class="inline-img__content">
+            <h2 class="inline-img__title">
+              @item.Value().Caption
+            </h2>
+          </div>
+        </div>
+      }
+    }
   }
 
 </div>
