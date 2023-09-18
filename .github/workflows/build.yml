@@ -2,14 +2,17 @@ name: Docker - Build and push latest
 
 on:
   push:
-    branches: ["**"]
-    tags-ignore: ["release-*"]
+    branches: [ "**" ]
+    tags-ignore: [ "release-*" ]
   workflow_dispatch:
+
 
 env:
   REGISTRY: ghcr.io
   APP_IMAGE: ghcr.io/${{ github.repository }}/${{ github.ref_name }}/razor-example
   BUILD_IMAGE: ghcr.io/${{ github.repository }}/${{ github.ref_name }}/razor-example:buildimage
+  CONTENSIS_CLIENT_ID: e58f9b37-c834-400e-8ed3-d1a2d5586c70
+  CONTENSIS_SHARED_SECRET: f139aa29c759413abe7f868157b29167-5ca145f6c972467ca0802808639f6880-33ed490b62f844c1b71fed649c89ecac
 
 jobs:
   build-latest:
@@ -40,3 +43,18 @@ jobs:
           echo "image-uri=$APP_IMAGE_URI" >> $GITHUB_OUTPUT
           echo "Built Successfully"
         shell: bash
+  deploy:
+    name: Push block to Contensis
+    runs-on: ubuntu-latest
+    needs: build-latest
+    steps:
+      - name: Push block to Contensis
+        id: push-block
+        uses: contensis/block-push@v1
+        with:
+          block-id: dave-leif-demo
+          alias: velocity-blocks
+          project-id: leif03
+          client-id: ${{ env.CONTENSIS_CLIENT_ID }}
+          shared-secret: ${{ env.CONTENSIS_SHARED_SECRET }}
+          image-uri: ${{ env.APP_IMAGE }}:build-${{ github.run_number }}
